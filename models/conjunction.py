@@ -24,7 +24,7 @@ class Conjunction(PACModel):
             (Data point has length {len(data_point)} but conjunction contains literal with index {self.__max_index}')
 
         for lit in self.__literals:
-            if bool(data_point[lit.index]) != lit.negation:
+            if bool(data_point[lit.index]) == lit.negation:
                 return 0
 
         return 1
