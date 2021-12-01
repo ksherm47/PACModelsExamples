@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import os
 
-data_file_path = os.path.join('..', 'data', 'data1cleaned.csv')
+data_file_path = os.path.join('.', 'data1cleaned.csv')
 total_data = pd.read_csv(data_file_path, sep=',').values
 
 # Clean out first 9 columns
