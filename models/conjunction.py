@@ -1,4 +1,3 @@
-from data import project_data
 from pac_model import PACModel
 import numpy as np
 
@@ -30,11 +29,11 @@ class Conjunction(PACModel):
         return 1
 
 
-def elimination_algorithm(data_train: np.array):
+def elimination_algorithm(data_train: np.array, data_train_labels: np.array):
     lits = [Literal(idx, neg) for idx in range(data_train.shape[1]) for neg in (True, False)]
 
-    for data_point in data_train:
-        if Conjunction(lits).evaluate(data_point):
+    for (data_point, label) in zip(data_train, data_train_labels):
+        if label == 1:
             for idx in range(data_train.shape[1]):
                 if data_point[idx] == 1:
 
