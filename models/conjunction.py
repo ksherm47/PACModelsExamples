@@ -4,11 +4,11 @@ import numpy as np
 
 class Literal:
 
-    def __init__(self, index, negation):
+    def __init__(self, index: int, negation: bool):
         if index <= 0:
             raise ValueError('Literal must have non-negative index')
         self.index = index
-        self.negation = bool(negation)
+        self.negation = negation
 
 
 class Conjunction(PACModel):
@@ -54,5 +54,5 @@ def elimination_algorithm(data_train: np.array, data_train_labels: np.array):
     return Conjunction(lits)
 
 
-def get_conjunction(data_train: np.array):
-    return elimination_algorithm(data_train)
+def get_conjunction(data_train: np.array, data_train_labels: np.array):
+    return elimination_algorithm(data_train, data_train_labels)
