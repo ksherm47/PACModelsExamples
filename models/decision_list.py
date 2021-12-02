@@ -64,8 +64,12 @@ def decision_list_algorithm(data_train: np.array, data_train_labels: np.array):
                     # Remove data points from s
                     s = [(data_idx, label) for data_idx, label in s if data_idx not in lit_data_indices]
 
-    decision_list_default = s[0][1] # They all have same common label
+    decision_list_default = s[0][1]  # They all have same common label
     return DecisionList(decision_list_literals, decision_list_labels, decision_list_default)
+
+
+def get_approx_sample_size(epsilon, delta, n):
+    return (1 / epsilon) * (n * np.log(n) + np.log(1 / delta))
 
 
 def get_decision_list(data_train: np.array, data_train_labels: np.array):
