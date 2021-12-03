@@ -2,11 +2,13 @@ import pandas as pd
 import numpy as np
 import os
 
-data_file_path = os.path.join('.', 'data1cleaned.csv')
+data_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data1cleaned.csv')
 total_data = pd.read_csv(data_file_path, sep=',').values
 
 # Clean out first 9 columns
 total_data = np.delete(total_data, list(range(9)), 1)
+
+data_dim = total_data.shape[0] - 1  # subtract label
 
 
 def get_data_sample(num_samples):
@@ -21,4 +23,3 @@ def get_data_sample(num_samples):
     test_data = np.delete(test_data, 25, 1)
 
     return train_data, train_labels, test_data, test_labels
-
