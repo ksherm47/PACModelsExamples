@@ -1,5 +1,5 @@
 from .pac_model import PACModel
-from .conjunction import Literal
+from .literal import Literal
 import numpy as np
 
 
@@ -21,8 +21,11 @@ class DecisionList(PACModel):
         self.__max_index = sorted(literals, key=lambda x: x.index)[-1].index if literals else -1
 
     def __str__(self):
-        return ' OR '.join([str(lit) + ' -> ' + str(label) for lit, label in zip(self.__literals, self.__labels)])
+        chain_str = ' OR '.join([str(lit) + ' -> ' + str(label) for lit, label in zip(self.__literals, self.__labels)])
+        return '(' + chain_str + f') -> {self.__default}'
 
+    def size(self):
+        return len(self.__literals)
 
     def evaluate(self, data_point):
         if len(data_point) < self.__max_index + 1:
@@ -94,12 +97,12 @@ def __decision_list_algorithm(data_train: np.array, data_train_labels: np.array)
             all_literals = [l for l in all_literals if l.index != most_useful[0].index]
             s_l_lookup = define_s_l(s, all_literals)
 
-    decision_list_default = s[0][1] if s else 1  # They all have same common label. If s is empty, arbitrarily set to 1
+    decision_list_default = s[0][1] if s else 0  # They all have same common label. If s is empty, arbitrarily set to 0
     return DecisionList(decision_list_literals, decision_list_labels, decision_list_default)
 
 
-def get_approx_sample_size(epsilon, delta, n):
-    return int((1 / epsilon) * (n * np.log(n) + np.log(1 / delta)))
+def get_approx_sample_size(epsilon, delta, n, c=1):
+    return c * int((1 / epsilon) * (n * np.log(n) + np.log(1 / delta)))
 
 
 def get_decision_list(data_train: np.array, data_train_labels: np.array):
