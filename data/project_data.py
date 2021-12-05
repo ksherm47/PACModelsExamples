@@ -13,7 +13,7 @@ total_data = np.delete(total_data, list(range(9)), 1)
 
 data_dim = total_data.shape[1] - 1  # subtract label
 
-__data_zip_path = os.path.join(data_dir, 'saved_data.zip')
+__data_zip_path = os.path.join(data_dir, 'saved_data_objs.zip')
 
 
 def unzip_data():

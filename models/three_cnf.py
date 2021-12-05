@@ -2,7 +2,6 @@ from .pac_model import PACModel
 from .disjunction import Disjunction
 from .literal import Literal
 from .conjunction import get_conjunction
-from .utils import negate_disjunction
 from data import project_data
 import itertools
 import numpy as np
