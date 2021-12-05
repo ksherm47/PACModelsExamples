@@ -6,7 +6,7 @@ import numpy as np
 class Conjunction(PACModel):
 
     def __init__(self, literals: list[Literal]):
-        self.__max_index = sorted(literals, key=lambda x: x.index)[-1].index
+        self.__max_index = sorted(literals, key=lambda x: x.index)[-1].index if literals else -1
         self.__literals = literals
 
     def __str__(self):
