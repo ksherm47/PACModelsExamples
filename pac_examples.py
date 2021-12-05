@@ -3,9 +3,10 @@ from data import project_data
 
 RUN_CONJUNCTION_EXPERIMENT = False
 RUN_DECISION_LIST_EXPERIMENT = False
-RUN_3CNF_EXPERIMENT = False
+RUN_3CNF_EXPERIMENT = True
+UNZIP_DATA_OBJECTS = False
 DATA_OBJECTS_TO_ZIP = ['3CNF_hypothesis']
-ZIP_DATA_OBJECTS = False
+ZIP_DATA_OBJECTS = True
 
 
 def conjunction_experiment(num_trials=1000, epsilon=0.1, delta=0.1, m=None, improved_sample_size=True):
@@ -82,6 +83,8 @@ def three_cnf_experiment():
     print(f'3CNF Error Rate: {error_rate}')
 
 
+if UNZIP_DATA_OBJECTS:
+    project_data.unzip_data()
 if RUN_CONJUNCTION_EXPERIMENT:
     conjunction_experiment(num_trials=10)
 if RUN_DECISION_LIST_EXPERIMENT:

@@ -33,15 +33,17 @@ class Conjunction(PACModel):
 def __elimination_algorithm(data_train: np.array, data_train_labels: np.array, literal_name='x') -> Conjunction:
     lit_dict = {(idx, neg): True for idx in range(data_train.shape[1]) for neg in (True, False)}
 
-    for (data_point, label) in zip(data_train, data_train_labels):
+    for i, (data_point, label) in enumerate(zip(data_train, data_train_labels)):
         if label == 1:
             for idx in range(data_train.shape[1]):
                 if data_point[idx] == 1:
                     lit_dict[(idx, True)] = False
                 else:  # data_point[idx] == 0
                     lit_dict[(idx, False)] = False
+        print(f'\rElimination algorithm iterated over {i + 1}/{data_train.shape[0]} data points', end='')
+    print('\n', end='')
 
-    conj_literals = [Literal(idx, neg) for idx, neg in lit_dict.keys() if lit_dict[(idx, neg)]]
+    conj_literals = [Literal(idx, neg, name=literal_name) for idx, neg in lit_dict.keys() if lit_dict[(idx, neg)]]
     return Conjunction(conj_literals)
 
 

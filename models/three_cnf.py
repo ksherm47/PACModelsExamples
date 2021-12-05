@@ -2,6 +2,7 @@ from .pac_model import PACModel
 from .disjunction import Disjunction
 from .literal import Literal
 from .conjunction import get_conjunction
+from .utils import negate_disjunction
 from data import project_data
 import itertools
 import numpy as np
@@ -41,19 +42,33 @@ def __three_cnf_algorithm(data_train: np.array, data_train_labels: np.array) -> 
         clauses.append(disj)
         disjunction_lookup[trans_idx] = disj
 
+    transformed_data = None
     if not project_data.data_obj_exists('three_cnf_transformed') and not project_data.data_obj_exists('3CNF_hypothesis'):
+        print('Transforming data into 3CNF space...')
         transformed_data = np.empty(shape=(data_train.shape[0], len(clauses)))
         for i, data_point in enumerate(data_train):
             transformed_row = [clause.evaluate(data_point) for clause in clauses]
             transformed_data[i] = transformed_row
+            print(f'\rTransformed {i + 1}/{data_train.shape[0]} rows...', end='')
 
+        print('\nSaving transformed data...')
         project_data.save_data_obj(transformed_data, 'three_cnf_transformed')
 
     if not project_data.data_obj_exists('3CNF_hypothesis'):
-        print('Loading transformed data...')
-        transformed_data = project_data.get_data_obj('three_cnf_transformed')
+        if transformed_data is None:
+            print('Loading transformed data...')
+            transformed_data = project_data.get_data_obj('three_cnf_transformed')
         print('Beginning elimination algorithm on transformed data...')
         transformed_conj = get_conjunction(transformed_data, data_train_labels, literal_name='z')
+
+        three_cnf_terms = []
+        for lit in transformed_conj.get_literals():
+            if lit.negation:
+                neg_disj_literals = [l.negate() for l in disjunction_lookup[lit.index].get_literals()]
+                three_cnf_terms.append(Disjunction(neg_disj_literals))
+            else:
+                three_cnf_terms.append(disjunction_lookup[lit.index])
+
         three_cnf_terms = [disjunction_lookup[lit.index] for lit in transformed_conj.get_literals()]
         print('Saving 3CNF hypothesis...')
         three_cnf_hypothesis = ThreeCNF(three_cnf_terms)

@@ -8,6 +8,10 @@ class Literal:
         self.negation = negation
         self.__name = name
 
+    def negate(self):
+        self.negation = not self.negation
+        return self
+
     def __str__(self):
         return ('NOT ' if self.negation else '') + f'{self.__name}_{self.index}'
 

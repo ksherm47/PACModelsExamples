@@ -13,13 +13,15 @@ total_data = np.delete(total_data, list(range(9)), 1)
 
 data_dim = total_data.shape[1] - 1  # subtract label
 
-# Extract any compressed data detected
 __data_zip_path = os.path.join(data_dir, 'saved_data.zip')
-if os.path.exists(__data_zip_path):
-    print(f'Extracting previously saved data from {__data_zip_path}...')
-    with zipfile.ZipFile(__data_zip_path, 'r') as zr:
-        zr.extractall(data_dir)
-    os.remove(__data_zip_path)
+
+
+def unzip_data():
+    if os.path.exists(__data_zip_path):
+        print(f'Extracting previously saved data from {__data_zip_path}...')
+        with zipfile.ZipFile(__data_zip_path, 'r') as zr:
+            zr.extractall(data_dir)
+        os.remove(__data_zip_path)
 
 
 def zip_data(data_objects: list, clean: bool = False, remove_previous: bool = False):
@@ -30,9 +32,9 @@ def zip_data(data_objects: list, clean: bool = False, remove_previous: bool = Fa
     os.chdir(data_dir)
     with zipfile.ZipFile(__data_zip_path, 'w') as zw:
         for obj in data_objects:
-            zw.write(obj)
+            zw.write(obj + '.pkl')
             if clean:
-                os.remove(obj)
+                os.remove(obj + '.pkl')
     os.chdir(curr_dir)
 
 
@@ -56,24 +58,24 @@ def get_full_data() -> tuple[np.array, np.array]:
 
 
 def save_data_obj(data_object, filename, protocol=5):
-    full_path = os.path.join(data_dir, filename)
+    full_path = os.path.join(data_dir, filename) + '.pkl'
     with open(full_path, 'wb') as fw:
         pickle.dump(data_object, fw, protocol=protocol)
 
 
 def get_data_obj(filename):
-    full_path = os.path.join(data_dir, filename)
+    full_path = os.path.join(data_dir, filename) + '.pkl'
     with open(full_path, 'rb') as fr:
         data_object = pickle.load(fr)
     return data_object
 
 
 def delete_data_obj(filename):
-    full_path = os.path.join(data_dir, filename)
+    full_path = os.path.join(data_dir, filename) + '.pkl'
     if os.path.exists(full_path):
         os.remove(full_path)
 
 
 def data_obj_exists(filename) -> bool:
-    full_path = os.path.join(data_dir, filename)
+    full_path = os.path.join(data_dir, filename) + '.pkl'
     return os.path.exists(full_path)
