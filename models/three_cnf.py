@@ -41,7 +41,7 @@ def __three_cnf_algorithm(data_train: np.array, data_train_labels: np.array):
         clauses.append(disj)
         disjunction_lookup[trans_idx] = disj
 
-    if not project_data.data_obj_exists('three_cnf_transformed'):
+    if not project_data.data_obj_exists('three_cnf_transformed') and not project_data.data_obj_exists('3CNF_hypothesis'):
         transformed_data = np.empty(shape=(data_train.shape[0], len(clauses)))
         for i, data_point in enumerate(data_train):
             transformed_row = [clause.evaluate(data_point) for clause in clauses]
