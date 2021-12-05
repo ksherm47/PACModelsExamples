@@ -36,7 +36,7 @@ def zip_data(data_objects: list, clean: bool = False, remove_previous: bool = Fa
     os.chdir(curr_dir)
 
 
-def get_data_sample(num_samples):
+def get_data_sample(num_samples) -> tuple[np.array, np.array, np.array, np.array]:
     m = num_samples if num_samples < total_data.shape[0] else total_data.shape[0]
 
     np.random.shuffle(total_data)
@@ -50,7 +50,7 @@ def get_data_sample(num_samples):
     return train_data, train_labels, test_data, test_labels
 
 
-def get_full_data():
+def get_full_data() -> tuple[np.array, np.array]:
     full_data, full_data_labels, _, _ = get_data_sample(total_data.shape[0])
     return full_data, full_data_labels
 
@@ -74,6 +74,6 @@ def delete_data_obj(filename):
         os.remove(full_path)
 
 
-def data_obj_exists(filename):
+def data_obj_exists(filename) -> bool:
     full_path = os.path.join(data_dir, filename)
     return os.path.exists(full_path)

@@ -24,10 +24,10 @@ class DecisionList(PACModel):
         chain_str = ' OR '.join([str(lit) + ' -> ' + str(label) for lit, label in zip(self.__literals, self.__labels)])
         return '(' + chain_str + f') -> {self.__default}'
 
-    def size(self):
+    def size(self) -> int:
         return len(self.__literals)
 
-    def evaluate(self, data_point):
+    def evaluate(self, data_point) -> int:
         if len(data_point) < self.__max_index + 1:
             raise ValueError(f'Decision list includes literals not included in data point. \
             (Data point has length {len(data_point)} but decision list contains literal with index {self.__max_index}')
@@ -39,7 +39,7 @@ class DecisionList(PACModel):
         return self.__default
 
 
-def __decision_list_algorithm(data_train: np.array, data_train_labels: np.array):
+def __decision_list_algorithm(data_train: np.array, data_train_labels: np.array) -> DecisionList:
     decision_list_literals = []
     decision_list_labels = []
 
@@ -101,9 +101,9 @@ def __decision_list_algorithm(data_train: np.array, data_train_labels: np.array)
     return DecisionList(decision_list_literals, decision_list_labels, decision_list_default)
 
 
-def get_approx_sample_size(epsilon, delta, n, c=1):
+def get_approx_sample_size(epsilon, delta, n, c=1) -> int:
     return c * int((1 / epsilon) * (n * np.log(n) + np.log(1 / delta)))
 
 
-def get_decision_list(data_train: np.array, data_train_labels: np.array):
+def get_decision_list(data_train: np.array, data_train_labels: np.array) -> DecisionList:
     return __decision_list_algorithm(data_train, data_train_labels)

@@ -15,10 +15,10 @@ class ThreeCNF(PACModel):
                 raise ValueError('Disjunction term is not of size 3')
         self.__terms = terms
 
-    def size(self):
+    def size(self) -> int:
         return sum([term.size() for term in self.__terms])
 
-    def evaluate(self, data_point):
+    def evaluate(self, data_point) -> int:
         for disj in self.__terms:
             if disj.evaluate(data_point) == 0:
                 return 0
@@ -28,7 +28,7 @@ class ThreeCNF(PACModel):
         return ' AND '.join([f'({term})' for term in self.__terms])
 
 
-def __three_cnf_algorithm(data_train: np.array, data_train_labels: np.array):
+def __three_cnf_algorithm(data_train: np.array, data_train_labels: np.array) -> ThreeCNF:
     n = data_train.shape[1]
     all_literals = [Literal(idx, False) for idx in range(n)]
     all_literals.extend([Literal(idx, True) for idx in range(n)])
@@ -65,5 +65,5 @@ def __three_cnf_algorithm(data_train: np.array, data_train_labels: np.array):
     return three_cnf_hypothesis
 
 
-def get_three_cnf(data_train: np.array, data_train_labels: np.array):
+def get_three_cnf(data_train: np.array, data_train_labels: np.array) -> ThreeCNF:
     return __three_cnf_algorithm(data_train, data_train_labels)
