@@ -70,6 +70,8 @@ def three_cnf_experiment():
     full_data, full_data_labels = project_data.get_full_data()
     h_3cnf = three_cnf.get_three_cnf(full_data, full_data_labels)
 
+    print('========== Conducting 3CNF experiment with full data set ==========')
+
     error_rate = 0
     for data_point, label in zip(full_data, full_data_labels):
         error_rate += 1 if label == h_3cnf.evaluate(data_point) else 0
