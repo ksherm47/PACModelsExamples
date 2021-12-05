@@ -33,10 +33,10 @@ class Disjunction(PACModel):
 
 def get_disjunction(data_train: np.array, data_train_labels: np.array):
     neg_labels = [(label + 1) % 2 for label in data_train_labels]
-    transformed_data = np.empty(shape=data_train.shape)
+    neg_data = np.empty(shape=data_train.shape)
 
     for i, data_point in enumerate(data_train):
-        transformed_data[i] = [(x + 1) % 2 for x in data_point]
+        neg_data[i] = [(x + 1) % 2 for x in data_point]
 
-    conj = get_conjunction(transformed_data, neg_labels)
+    conj = get_conjunction(neg_data, neg_labels)
     return Disjunction(conj.get_literals())
