@@ -30,7 +30,8 @@ class Conjunction(PACModel):
         return 1
 
 
-def __elimination_algorithm(data_train: np.array, data_train_labels: np.array, literal_name='x') -> Conjunction:
+def __elimination_algorithm(data_train: np.array, data_train_labels: np.array,
+                            literal_name='x', verbose=True) -> Conjunction:
     lit_dict = {(idx, neg): True for idx in range(data_train.shape[1]) for neg in (True, False)}
 
     for i, (data_point, label) in enumerate(zip(data_train, data_train_labels)):
@@ -40,8 +41,10 @@ def __elimination_algorithm(data_train: np.array, data_train_labels: np.array, l
                     lit_dict[(idx, True)] = False
                 else:  # data_point[idx] == 0
                     lit_dict[(idx, False)] = False
-        print(f'\rElimination algorithm iterated over {i + 1}/{data_train.shape[0]} data points', end='')
-    print('\n', end='')
+        if verbose:
+            print(f'\rElimination algorithm iterated over {i + 1}/{data_train.shape[0]} data points', end='')
+    if verbose:
+        print('\n', end='')
 
     conj_literals = [Literal(idx, neg, name=literal_name) for idx, neg in lit_dict.keys() if lit_dict[(idx, neg)]]
     return Conjunction(conj_literals)
@@ -53,5 +56,6 @@ def get_approx_sample_size(epsilon, delta, n, c=1, improved=True) -> int:
     return int((c * n / epsilon) * (np.log(2 * n) + np.log(1 / delta)))
 
 
-def get_conjunction(data_train: np.array, data_train_labels: np.array, literal_name: str = 'x') -> Conjunction:
-    return __elimination_algorithm(data_train, data_train_labels, literal_name)
+def get_conjunction(data_train: np.array, data_train_labels: np.array,
+                    literal_name: str = 'x', verbose=True) -> Conjunction:
+    return __elimination_algorithm(data_train, data_train_labels, literal_name, verbose)

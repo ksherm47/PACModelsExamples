@@ -33,7 +33,7 @@ class DecisionList(PACModel):
             (Data point has length {len(data_point)} but decision list contains literal with index {self.__max_index}')
 
         for (lit, label) in zip(self.__literals, self.__labels):
-            if bool(data_point[lit.index]) == lit.negation:
+            if bool(data_point[lit.index]) != lit.negation:
                 return label
 
         return self.__default

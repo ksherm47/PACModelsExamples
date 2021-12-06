@@ -1,16 +1,18 @@
 from models import conjunction, disjunction, decision_list, three_cnf
 from data import project_data
+import matplotlib.pyplot as plt
 
 RUN_CONJUNCTION_EXPERIMENT = False
-RUN_DISJUNCTION_EXPERIMENT = True
-RUN_DECISION_LIST_EXPERIMENT = False
+RUN_DISJUNCTION_EXPERIMENT = False
+RUN_DECISION_LIST_EXPERIMENT = True
 RUN_3CNF_EXPERIMENT = False
 UNZIP_DATA_OBJECTS = False
 DATA_OBJECTS_TO_ZIP = ['3CNF_hypothesis']
 ZIP_DATA_OBJECTS = False
 
 
-def conjunction_experiment(num_trials=1000, epsilon=0.1, delta=0.1, m=None, improved_sample_size=True):
+def conjunction_experiment(num_trials=1000, epsilon=0.1, delta=0.1,
+                           m=None, improved_sample_size=True, verbose=True) -> list[float]:
     if m is None:
         conj_m = conjunction.get_approx_sample_size(epsilon=epsilon,
                                                     delta=delta,
@@ -23,7 +25,7 @@ def conjunction_experiment(num_trials=1000, epsilon=0.1, delta=0.1, m=None, impr
     error_rates = []
     for trial in range(num_trials):
         conj_train, conj_train_labels, conj_test, conj_test_labels = project_data.get_data_sample(conj_m)
-        h_conj = conjunction.get_conjunction(conj_train, conj_train_labels)
+        h_conj = conjunction.get_conjunction(conj_train, conj_train_labels, verbose=verbose)
 
         # Evaluating on train and test data for population error rate
         error_rate = 0
@@ -33,14 +35,23 @@ def conjunction_experiment(num_trials=1000, epsilon=0.1, delta=0.1, m=None, impr
             error_rate += 1 if train_label != h_conj.evaluate(train_data_point) else 0
         error_rate /= (conj_test.shape[0] + conj_train.shape[0])
 
-        print(f'Trial {trial + 1}:')
-        print(f'\tConjunction Hypothesis: {h_conj}')
-        print(f'\tError Rate: {error_rate}\n')
+        if verbose:
+            print(f'Trial {trial + 1}:')
+            print(f'\tConjunction Hypothesis: {h_conj}')
+            print(f'\tError Rate: {error_rate}\n')
+        else:
+            print(f'\r{trial + 1}/{num_trials} trials completed', end='')
 
         error_rates.append(error_rate)
 
+    if not verbose:
+        print('\n', end='')
 
-def disjunction_experiment(num_trials=1000, epsilon=0.1, delta=0.1, m=None, improved_sample_size=True):
+    return error_rates
+
+
+def disjunction_experiment(num_trials=1000, epsilon=0.1, delta=0.1,
+                           m=None, improved_sample_size=True, verbose=True) -> list[float]:
     if m is None:
         disj_m = conjunction.get_approx_sample_size(epsilon=epsilon,
                                                     delta=delta,
@@ -53,7 +64,7 @@ def disjunction_experiment(num_trials=1000, epsilon=0.1, delta=0.1, m=None, impr
     error_rates = []
     for trial in range(num_trials):
         disj_train, disj_train_labels, disj_test, disj_test_labels = project_data.get_data_sample(disj_m)
-        h_disj = disjunction.get_disjunction(disj_train, disj_train_labels)
+        h_disj = disjunction.get_disjunction(disj_train, disj_train_labels, verbose=verbose)
 
         # Evaluating on train and test data for population error rate
         error_rate = 0
@@ -63,14 +74,22 @@ def disjunction_experiment(num_trials=1000, epsilon=0.1, delta=0.1, m=None, impr
             error_rate += 1 if train_label != h_disj.evaluate(train_data_point) else 0
         error_rate /= (disj_test.shape[0] + disj_train.shape[0])
 
-        print(f'Trial {trial + 1}:')
-        print(f'\tDisjunction Hypothesis: {h_disj}')
-        print(f'\tError Rate: {error_rate}\n')
+        if verbose:
+            print(f'Trial {trial + 1}:')
+            print(f'\tDisjunction Hypothesis: {h_disj}')
+            print(f'\tError Rate: {error_rate}\n')
+        else:
+            print(f'\r{trial + 1}/{num_trials} trials completed', end='')
 
         error_rates.append(error_rate)
 
+    if not verbose:
+        print('\n', end='')
 
-def decision_list_experiment(num_trials=1000, epsilon=0.4, delta=0.1, m=None):
+    return error_rates
+
+
+def decision_list_experiment(num_trials=1000, epsilon=0.15, delta=0.1, m=None, verbose=True) -> list[float]:
     if m is None:
         dl_m = decision_list.get_approx_sample_size(epsilon=epsilon,
                                                     delta=delta,
@@ -91,14 +110,22 @@ def decision_list_experiment(num_trials=1000, epsilon=0.4, delta=0.1, m=None):
             error_rate += 1 if train_label != h_dl.evaluate(train_data_point) else 0
         error_rate /= (dl_test.shape[0] + dl_train.shape[0])
 
-        print(f'Trial {trial + 1}:')
-        print(f'\tDecision List Model: {h_dl}')
-        print(f'\tError Rate:{error_rate}\n')
+        if verbose:
+            print(f'Trial {trial + 1}:')
+            print(f'\tDecision List Model: {h_dl}')
+            print(f'\tError Rate:{error_rate}\n')
+        else:
+            print(f'\r{trial + 1}/{num_trials} trials completed', end='')
 
         error_rates.append(error_rate)
 
+    if not verbose:
+        print('\n', end='')
 
-def three_cnf_experiment():
+    return error_rates
+
+
+def three_cnf_experiment() -> float:
     full_data, full_data_labels = project_data.get_full_data()
     h_3cnf = three_cnf.get_three_cnf(full_data, full_data_labels)
 
@@ -113,16 +140,26 @@ def three_cnf_experiment():
     print(f'3CNF Size: {h_3cnf.size()}')
     print(f'3CNF Error Rate: {error_rate}')
 
+    return error_rate
+
 
 if UNZIP_DATA_OBJECTS:
     project_data.unzip_data()
 if RUN_CONJUNCTION_EXPERIMENT:
-    conjunction_experiment(num_trials=10)
+    conj_errs = conjunction_experiment(verbose=False)
+    plt.hist(conj_errs, bins=20)
+    plt.show()
 if RUN_DISJUNCTION_EXPERIMENT:
-    disjunction_experiment(num_trials=10)
+    disj_errs = disjunction_experiment(num_trials=10)
+    plt.hist(disj_errs, bins=20)
+    plt.show()
 if RUN_DECISION_LIST_EXPERIMENT:
-    decision_list_experiment(num_trials=10)
+    dl_errs = decision_list_experiment(verbose=False)
+    plt.hist(dl_errs, bins=20)
+    plt.show()
 if RUN_3CNF_EXPERIMENT:
-    three_cnf_experiment()
+    three_cnf_error = three_cnf_experiment()
 if ZIP_DATA_OBJECTS:
     project_data.zip_data(DATA_OBJECTS_TO_ZIP, clean=True, remove_previous=True)
+
+
