@@ -16,12 +16,13 @@ data_dim = total_data.shape[1] - 1  # subtract label
 __data_zip_path = os.path.join(data_dir, 'saved_data_objs.zip')
 
 
-def unzip_data():
+def unzip_data(remove_zip_file=False):
     if os.path.exists(__data_zip_path):
         print(f'Extracting previously saved data from {__data_zip_path}...')
         with zipfile.ZipFile(__data_zip_path, 'r') as zr:
             zr.extractall(data_dir)
-        os.remove(__data_zip_path)
+        if remove_zip_file:
+            os.remove(__data_zip_path)
 
 
 def zip_data(data_objects: list, clean: bool = False, remove_previous: bool = False):
@@ -44,10 +45,10 @@ def get_data_sample(num_samples) -> tuple[np.array, np.array, np.array, np.array
     np.random.shuffle(total_data)
     train_data = total_data[:m, :]
     test_data = total_data[m:, :]
-    train_labels = train_data[:, 25]
-    test_labels = test_data[:, 25]
-    train_data = np.delete(train_data, 25, 1)
-    test_data = np.delete(test_data, 25, 1)
+    train_labels = train_data[:, 16]
+    test_labels = test_data[:, 16]
+    train_data = np.delete(train_data, 16, 1)
+    test_data = np.delete(test_data, 16, 1)
 
     return train_data, train_labels, test_data, test_labels
 

@@ -53,7 +53,7 @@ def __elimination_algorithm(data_train: np.array, data_train_labels: np.array,
 def get_approx_sample_size(epsilon, delta, n, c=1, improved=True) -> int:
     if improved:
         return c * int((1 / epsilon) * np.log(1 / delta) + n / epsilon)
-    return int((c * n / epsilon) * (np.log(2 * n) + np.log(1 / delta)))
+    return int((c * 2 * n / epsilon) * (np.log(2 * n) + np.log(1 / delta)))
 
 
 def get_conjunction(data_train: np.array, data_train_labels: np.array,
