@@ -3,13 +3,15 @@ from models import conjunction, disjunction, decision_list, three_cnf
 
 
 def conjunction_experiment(epsilon, delta, num_trials,
-                           m=None, improved_sample_size=True,
+                           m=None, improved_sample_size=False, tolerant=False, mu=0.8,
                            verbose=False, only_test=True, save_models=True) -> list[float]:
     if m is None:
         conj_m = conjunction.get_approx_sample_size(epsilon=epsilon,
                                                     delta=delta,
                                                     n=project_data.data_dim,
-                                                    improved=improved_sample_size)
+                                                    improved=improved_sample_size,
+                                                    tolerant=tolerant,
+                                                    mu=mu)
     else:
         conj_m = m
     print(f'========== Conducting Conjunction experiment with sample size {conj_m} and {num_trials} trials. ==========')
@@ -49,13 +51,15 @@ def conjunction_experiment(epsilon, delta, num_trials,
 
 
 def disjunction_experiment(epsilon, delta, num_trials,
-                           m=None, improved_sample_size=True,
+                           m=None, improved_sample_size=False, tolerant=False, mu=0.8,
                            verbose=False, only_test=True, save_models=True) -> list[float]:
     if m is None:
         disj_m = conjunction.get_approx_sample_size(epsilon=epsilon,
                                                     delta=delta,
                                                     n=project_data.data_dim,
-                                                    improved=improved_sample_size)
+                                                    improved=improved_sample_size,
+                                                    tolerant=tolerant,
+                                                    mu=mu)
     else:
         disj_m = m
     print(f'========== Conducting Disjunction experiment with sample size {disj_m} and {num_trials} trials. ==========')

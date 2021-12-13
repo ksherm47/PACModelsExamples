@@ -2,8 +2,8 @@ from data import project_data
 from experiments import conjunction_experiment, disjunction_experiment, three_cnf_experiment, decision_list_experiment
 import matplotlib.pyplot as plt
 
-RUN_CONJUNCTION_EXPERIMENT = False
-RUN_DISJUNCTION_EXPERIMENT = False
+RUN_CONJUNCTION_EXPERIMENT = True
+RUN_DISJUNCTION_EXPERIMENT = True
 CONJUNCTION_TRIALS = 1000
 DISJUNCTION_TRIALS = 1000
 CONJUNCTION_EPSILON = 0.1  # Both epsilon & delta used for disjunction learning too
@@ -29,7 +29,8 @@ if RUN_CONJUNCTION_EXPERIMENT:
                                        delta=CONJUNCTION_DELTA,
                                        num_trials=CONJUNCTION_TRIALS,
                                        verbose=False,
-                                       improved_sample_size=True)
+                                       tolerant=True,
+                                       mu=0.2)
     delta_rate = sum([1 for err in conj_errs if err < CONJUNCTION_EPSILON]) / CONJUNCTION_TRIALS
 
     print(f'Rate that conjunction had error less than {CONJUNCTION_EPSILON}: {delta_rate}')
@@ -42,6 +43,8 @@ if RUN_DISJUNCTION_EXPERIMENT:
     disj_errs = disjunction_experiment(epsilon=CONJUNCTION_EPSILON,
                                        delta=CONJUNCTION_DELTA,
                                        num_trials=DISJUNCTION_TRIALS,
+                                       tolerant=True,
+                                       mu=0.1,
                                        verbose=False)
     delta_rate = sum([1 for err in disj_errs if err < CONJUNCTION_EPSILON]) / DISJUNCTION_TRIALS
 
