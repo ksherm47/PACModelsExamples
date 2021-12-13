@@ -2,14 +2,14 @@ from data import project_data
 from experiments import conjunction_experiment, disjunction_experiment, three_cnf_experiment, decision_list_experiment
 import matplotlib.pyplot as plt
 
-RUN_CONJUNCTION_EXPERIMENT = True
-RUN_DISJUNCTION_EXPERIMENT = True
+RUN_CONJUNCTION_EXPERIMENT = False
+RUN_DISJUNCTION_EXPERIMENT = False
 CONJUNCTION_TRIALS = 1000
 DISJUNCTION_TRIALS = 1000
 CONJUNCTION_EPSILON = 0.1  # Both epsilon & delta used for disjunction learning too
 CONJUNCTION_DELTA = 0.1
 
-RUN_DECISION_LIST_EXPERIMENT = True
+RUN_DECISION_LIST_EXPERIMENT = False
 DECISION_LIST_TRIALS = 1000
 DECISION_LIST_EPSILON = 0.15
 DECISION_LIST_DELTA = 0.1
