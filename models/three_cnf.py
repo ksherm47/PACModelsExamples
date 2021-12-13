@@ -28,7 +28,8 @@ class ThreeCNF(PACModel):
         return ' AND '.join([f'({term})' for term in self.__terms])
 
 
-def __three_cnf_algorithm(data_train: np.array, data_train_labels: np.array) -> ThreeCNF:
+def __three_cnf_algorithm(data_train: np.array, data_train_labels: np.array,
+                          hypothesis_name='3CNF_hypothesis') -> ThreeCNF:
     n = data_train.shape[1]
     all_literals = [Literal(idx, False) for idx in range(n)]
     all_literals.extend([Literal(idx, True) for idx in range(n)])
@@ -42,7 +43,7 @@ def __three_cnf_algorithm(data_train: np.array, data_train_labels: np.array) -> 
         disjunction_lookup[trans_idx] = disj
 
     transformed_data = None
-    if not project_data.data_obj_exists('three_cnf_transformed') and not project_data.data_obj_exists('3CNF_hypothesis'):
+    if not project_data.data_obj_exists('three_cnf_transformed') and not project_data.data_obj_exists(hypothesis_name):
         print('Transforming data into 3CNF space...')
         transformed_data = np.empty(shape=(data_train.shape[0], len(clauses)))
         for i, data_point in enumerate(data_train):
@@ -53,7 +54,7 @@ def __three_cnf_algorithm(data_train: np.array, data_train_labels: np.array) -> 
         print('\nSaving transformed data...')
         project_data.save_data_obj(transformed_data, 'three_cnf_transformed')
 
-    if not project_data.data_obj_exists('3CNF_hypothesis'):
+    if not project_data.data_obj_exists(hypothesis_name):
         if transformed_data is None:
             print('Loading transformed data...')
             transformed_data = project_data.get_data_obj('three_cnf_transformed')
@@ -71,13 +72,13 @@ def __three_cnf_algorithm(data_train: np.array, data_train_labels: np.array) -> 
         three_cnf_terms = [disjunction_lookup[lit.index] for lit in transformed_conj.get_literals()]
         print('Saving 3CNF hypothesis...')
         three_cnf_hypothesis = ThreeCNF(three_cnf_terms)
-        project_data.save_data_obj(three_cnf_hypothesis, '3CNF_hypothesis')
+        project_data.save_data_obj(three_cnf_hypothesis, hypothesis_name)
     else:
         print('Loading 3CNF hypothesis...')
-        three_cnf_hypothesis = project_data.get_data_obj('3CNF_hypothesis')
+        three_cnf_hypothesis = project_data.get_data_obj(hypothesis_name)
 
     return three_cnf_hypothesis
 
 
-def get_three_cnf(data_train: np.array, data_train_labels: np.array) -> ThreeCNF:
-    return __three_cnf_algorithm(data_train, data_train_labels)
+def get_three_cnf(data_train: np.array, data_train_labels: np.array, hypothesis_name='3CNF_hypothesis') -> ThreeCNF:
+    return __three_cnf_algorithm(data_train, data_train_labels, hypothesis_name=hypothesis_name)
